@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+.github
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+.installed.cfg
+*.egg
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation
+*.md
+docs/
+
+# Terraform
+terraform/
+*.tf
+*.tfvars
+
+# Kubernetes
+k8s/
+
+# Scripts
+scripts/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vet-app
+  namespace: vet-app
+  labels:
+    app: vet-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vet-app
+  template:
+    metadata:
+      labels:
+        app: vet-app
+    spec:
+      containers:
+      - name: vet-app
+        # ⚠️ IMPORTANT: Update this image reference before deploying!
+        # 
+        # Current: Uses local 'vet-app:latest' tag (not in any registry)
+        # 
+        # Production options:
+        # Option 1 - Docker Hub:
+        #   image: your-dockerhub-username/vet-app:v1.0.0
+        # 
+        # Option 2 - AWS ECR:
+        #   image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/vet-app:v1.0.0
+        # 
+        # Option 3 - Google Container Registry:
+        #   image: gcr.io/your-project/vet-app:v1.0.0
+        # 
+        # Best practices:
+        # - Use specific version tags (v1.0.0) instead of 'latest'
+        # - Use image digests for immutability
+        # - Change imagePullPolicy to 'Always' for production
+        #
+        # See docs/APPLICATION_DEPLOYMENT.md for detailed instructions
+        image: vet-app:latest
+        imagePullPolicy: IfNotPresent  # Change to 'Always' in production
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        # NOTE: The vet_app is a CLI application. 
+        # If you convert it to a web service, uncomment and configure:
+        # ports:
+        # - containerPort: 8000
+        #   name: http
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 8000
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /ready
+        #     port: 8000
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 5
+      restartPolicy: Always

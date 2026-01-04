@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vet-app-service
+  namespace: vet-app
+  labels:
+    app: vet-app
+spec:
+  type: ClusterIP
+  selector:
+    app: vet-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+    name: http
+  # ⚠️ IMPORTANT: This service assumes vet_app is a web service
+  # The current vet_app is a CLI application. To use this service:
+  # 1. Convert vet_app to a web service (see docs/APPLICATION_DEPLOYMENT.md)
+  # 2. Update Dockerfile to run a web server on port 8000
+  # 3. Uncomment containerPort in deployment.yaml
+  # 
+  # OR: Delete this service and use a Job/CronJob for CLI execution
+  # See docs/APPLICATION_DEPLOYMENT.md for detailed instructions
