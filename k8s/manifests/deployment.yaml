@@ -17,6 +17,9 @@ spec:
     spec:
       containers:
       - name: vet-app
+        # IMPORTANT: Update this image to your registry
+        # Example: image: your-dockerhub-username/vet-app:latest
+        # Or: image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/vet-app:latest
         image: vet-app:latest
         imagePullPolicy: IfNotPresent
         resources:
@@ -26,7 +29,8 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "200m"
-        # Uncomment if app has HTTP endpoint
+        # NOTE: The vet_app is a CLI application. 
+        # If you convert it to a web service, uncomment and configure:
         # ports:
         # - containerPort: 8000
         #   name: http

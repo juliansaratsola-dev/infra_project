@@ -7,9 +7,10 @@ SERVER_IP=$1
 SSH_KEY=$2
 RANCHER_VERSION=${3:-"2.7.9"}
 HOSTNAME=${4:-"rancher.local"}
+BOOTSTRAP_PASSWORD=${5:-""}  # Optional: leave empty for auto-generated password
 
 if [ -z "$SERVER_IP" ] || [ -z "$SSH_KEY" ]; then
-    echo "Usage: $0 <server_ip> <ssh_key_path> [rancher_version] [hostname]"
+    echo "Usage: $0 <server_ip> <ssh_key_path> [rancher_version] [hostname] [bootstrap_password]"
     exit 1
 fi
 
@@ -35,14 +36,24 @@ ssh -i "$SSH_KEY" ubuntu@"$SERVER_IP" "export KUBECONFIG=/etc/rancher/rke2/rke2.
 echo "Waiting for cert-manager to be ready..."
 sleep 30
 
-# Install Rancher
+# Install Rancher with or without bootstrap password
 echo "Installing Rancher..."
-ssh -i "$SSH_KEY" ubuntu@"$SERVER_IP" "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml && \
-    helm install rancher rancher-latest/rancher \
-        --namespace cattle-system \
-        --set hostname=$HOSTNAME \
-        --set bootstrapPassword=admin \
-        --set replicas=1"
+if [ -n "$BOOTSTRAP_PASSWORD" ]; then
+    echo "Using provided bootstrap password..."
+    ssh -i "$SSH_KEY" ubuntu@"$SERVER_IP" "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml && \
+        helm install rancher rancher-latest/rancher \
+            --namespace cattle-system \
+            --set hostname=$HOSTNAME \
+            --set bootstrapPassword=$BOOTSTRAP_PASSWORD \
+            --set replicas=1"
+else
+    echo "Using auto-generated bootstrap password..."
+    ssh -i "$SSH_KEY" ubuntu@"$SERVER_IP" "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml && \
+        helm install rancher rancher-latest/rancher \
+            --namespace cattle-system \
+            --set hostname=$HOSTNAME \
+            --set replicas=1"
+fi
 
 echo "Waiting for Rancher to be ready..."
 sleep 60
@@ -56,7 +67,20 @@ echo "=========================================="
 echo "Rancher installation completed!"
 echo "=========================================="
 echo "Access Rancher at: https://$HOSTNAME"
-echo "Initial bootstrap password: admin"
+
+if [ -n "$BOOTSTRAP_PASSWORD" ]; then
+    echo "Bootstrap password: $BOOTSTRAP_PASSWORD"
+else
+    echo ""
+    echo "To retrieve the auto-generated password, run:"
+    echo "kubectl get secret --namespace cattle-system bootstrap-secret -o go-template='{{.data.bootstrapPassword|base64decode}}{{\"\\n\"}}'"
+    echo ""
+    echo "Or SSH to the server and run:"
+    echo "ssh -i $SSH_KEY ubuntu@$SERVER_IP"
+    echo "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"
+    echo "kubectl get secret --namespace cattle-system bootstrap-secret -o go-template='{{.data.bootstrapPassword|base64decode}}{{\"\\n\"}}'"
+fi
+
 echo ""
 echo "To access Rancher, you may need to:"
 echo "1. Configure DNS to point $HOSTNAME to the load balancer"
