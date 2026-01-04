@@ -1,0 +1,3 @@
+# Sistema de Gestión de Citas Veterinarias
+# No requiere dependencias externas
+# Python 3.6+ requerido
