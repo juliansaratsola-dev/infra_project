@@ -29,5 +29,3 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        env:
-          TF_VAR_example_variable: ${{ secrets.EXAMPLE_VARIABLE }}

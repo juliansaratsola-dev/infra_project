@@ -38,3 +38,8 @@ variable "private_subnet_cidr" {
   type        = string
   default     = "10.0.2.0/24"
 }
+
+variable "kubernetes_cluster_name" {
+  description = "The name of the Kubernetes cluster"
+  default     = "rke2-cluster"
+}
