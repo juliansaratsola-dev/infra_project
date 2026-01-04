@@ -17,11 +17,28 @@ spec:
     spec:
       containers:
       - name: vet-app
-        # IMPORTANT: Update this image to your registry
-        # Example: image: your-dockerhub-username/vet-app:latest
-        # Or: image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/vet-app:latest
+        # ⚠️ IMPORTANT: Update this image reference before deploying!
+        # 
+        # Current: Uses local 'vet-app:latest' tag (not in any registry)
+        # 
+        # Production options:
+        # Option 1 - Docker Hub:
+        #   image: your-dockerhub-username/vet-app:v1.0.0
+        # 
+        # Option 2 - AWS ECR:
+        #   image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/vet-app:v1.0.0
+        # 
+        # Option 3 - Google Container Registry:
+        #   image: gcr.io/your-project/vet-app:v1.0.0
+        # 
+        # Best practices:
+        # - Use specific version tags (v1.0.0) instead of 'latest'
+        # - Use image digests for immutability
+        # - Change imagePullPolicy to 'Always' for production
+        #
+        # See docs/APPLICATION_DEPLOYMENT.md for detailed instructions
         image: vet-app:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: IfNotPresent  # Change to 'Always' in production
         resources:
           requests:
             memory: "128Mi"

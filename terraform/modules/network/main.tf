@@ -136,14 +136,33 @@ resource "aws_security_group" "rke2_nodes" {
     self      = true
   }
 
-  # Kubernetes API server - WARNING: Open to all IPs in this config
-  # PRODUCTION: Restrict to specific CIDR blocks (corporate VPN, bastion hosts, etc.)
+  # Kubernetes API server - ⚠️ WARNING: OPEN TO ALL IPs (DEVELOPMENT ONLY)
+  # 
+  # Current: Allows access from any IP (0.0.0.0/0)
+  # Use case: Development, learning, testing
+  # 
+  # ❌ DO NOT USE THIS IN PRODUCTION ❌
+  # 
+  # Production alternatives:
+  # 1. Restrict to specific CIDR blocks:
+  #    cidr_blocks = ["10.0.0.0/8", "172.16.0.0/12"]
+  # 
+  # 2. Use VPN for all kubectl access:
+  #    cidr_blocks = ["198.51.100.0/24"]  # Your VPN CIDR
+  # 
+  # 3. Use AWS Systems Manager Session Manager:
+  #    Remove this rule entirely, access via SSM
+  # 
+  # 4. Use private API endpoint:
+  #    Configure RKE2 for private API access only
+  #
+  # See docs/SECURITY.md for detailed security hardening
   ingress {
     from_port   = 6443
     to_port     = 6443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Kubernetes API server - RESTRICT THIS IN PRODUCTION"
+    description = "Kubernetes API - DEVELOPMENT ONLY - RESTRICT IN PRODUCTION"
   }
 
   # Rancher UI
@@ -172,13 +191,36 @@ resource "aws_security_group" "rke2_nodes" {
     description = "RKE2 supervisor"
   }
 
-  # SSH access
+  # SSH access - ⚠️ WARNING: OPEN TO ALL IPs (DEVELOPMENT ONLY)
+  # 
+  # Current: Allows SSH from any IP (0.0.0.0/0)
+  # Use case: Development, learning, quick testing
+  # 
+  # ❌ DO NOT USE THIS IN PRODUCTION ❌
+  #
+  # Production alternatives:
+  # 1. Restrict to your office/home IP:
+  #    cidr_blocks = ["203.0.113.0/24"]
+  # 
+  # 2. Use corporate VPN:
+  #    cidr_blocks = ["10.0.0.0/8"]
+  # 
+  # 3. Use bastion host pattern:
+  #    Allow SSH only from bastion security group
+  #    source_security_group_id = aws_security_group.bastion.id
+  # 
+  # 4. Use AWS Systems Manager Session Manager (RECOMMENDED):
+  #    Remove this rule entirely
+  #    Use: aws ssm start-session --target <instance-id>
+  #    No public SSH port needed!
+  #
+  # See docs/SECURITY.md for detailed security hardening
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "SSH"
+    description = "SSH - DEVELOPMENT ONLY - RESTRICT IN PRODUCTION"
   }
 
   # Allow all outbound traffic
