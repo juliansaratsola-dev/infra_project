@@ -1,0 +1,27 @@
+# Development Environment Configuration
+
+environment = "dev"
+aws_region  = "us-east-1"
+project_name = "vet-infra"
+
+# Network
+vpc_cidr             = "10.0.0.0/16"
+availability_zones   = ["us-east-1a", "us-east-1b"]
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+
+# Compute
+rke2_server_count    = 1
+rke2_agent_count     = 2
+instance_type_server = "t3.medium"
+instance_type_agent  = "t3.medium"
+
+# Security
+allowed_ssh_cidr = "0.0.0.0/0"  # Restrict in production
+
+# RKE2
+rancher_version = "2.7.9"
+
+# Note: Set these via environment variables or terraform.tfvars.secret
+# key_name = "your-ssh-key"
+# rke2_cluster_token = "your-secure-token"

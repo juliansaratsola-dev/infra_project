@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vet-app-service
+  namespace: vet-app
+  labels:
+    app: vet-app
+spec:
+  type: ClusterIP
+  selector:
+    app: vet-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+    name: http

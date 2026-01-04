@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vet-app
+  namespace: vet-app
+  labels:
+    app: vet-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vet-app
+  template:
+    metadata:
+      labels:
+        app: vet-app
+    spec:
+      containers:
+      - name: vet-app
+        image: vet-app:latest
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        # Uncomment if app has HTTP endpoint
+        # ports:
+        # - containerPort: 8000
+        #   name: http
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 8000
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /ready
+        #     port: 8000
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 5
+      restartPolicy: Always
