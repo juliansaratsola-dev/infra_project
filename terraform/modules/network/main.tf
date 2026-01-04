@@ -136,13 +136,14 @@ resource "aws_security_group" "rke2_nodes" {
     self      = true
   }
 
-  # Kubernetes API server
+  # Kubernetes API server - WARNING: Open to all IPs in this config
+  # PRODUCTION: Restrict to specific CIDR blocks (corporate VPN, bastion hosts, etc.)
   ingress {
     from_port   = 6443
     to_port     = 6443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Kubernetes API server"
+    description = "Kubernetes API server - RESTRICT THIS IN PRODUCTION"
   }
 
   # Rancher UI

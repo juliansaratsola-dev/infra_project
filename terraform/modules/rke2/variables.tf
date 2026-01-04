@@ -34,3 +34,10 @@ variable "rancher_hostname" {
   type        = string
   default     = "rancher.local"
 }
+
+variable "rancher_bootstrap_password" {
+  description = "Initial bootstrap password for Rancher"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

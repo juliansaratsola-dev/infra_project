@@ -14,8 +14,9 @@ locals {
   })
 
   rancher_values = templatefile("${path.module}/templates/rancher-values.yaml.tpl", {
-    rancher_version = var.rancher_version
-    hostname        = var.rancher_hostname
+    rancher_version     = var.rancher_version
+    hostname            = var.rancher_hostname
+    bootstrap_password  = var.rancher_bootstrap_password
   })
 }
 

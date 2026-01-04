@@ -137,8 +137,9 @@ resource "aws_lb_target_group_attachment" "rancher" {
   port             = 443
 }
 
-# HTTPS Listener
+# HTTPS Listener (only create if SSL certificate is provided)
 resource "aws_lb_listener" "https" {
+  count             = var.ssl_certificate_arn != "" ? 1 : 0
   load_balancer_arn = aws_lb.rancher.arn
   port              = "443"
   protocol          = "HTTPS"

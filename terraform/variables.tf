@@ -74,9 +74,9 @@ variable "key_name" {
 }
 
 variable "allowed_ssh_cidr" {
-  description = "CIDR block allowed to SSH into instances"
+  description = "CIDR block allowed to SSH into instances. IMPORTANT: Change this to your IP/VPN CIDR in production!"
   type        = string
-  default     = "0.0.0.0/0"  # Restrict this in production
+  default     = "0.0.0.0/0"  # WARNING: Allows SSH from anywhere - only for development/testing
 }
 
 # RKE2 variables
